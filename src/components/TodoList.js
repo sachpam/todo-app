@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import Todo from "./Todo";
 import TodoForm from "./TodoForm";
 
@@ -18,6 +19,22 @@ import TodoForm from "./TodoForm";
 function TodoList() {
   const [todos, setTodos] = useState([]);
   const [count, setCount] = useState(0);
+
+  const fetchTodos = async () => {
+    const res = await axios.get("http://localhost:8080/api/todo");
+    setTodos(
+      res.data.map((todo) => ({
+        id: todo.id,
+        text: todo.todo,
+        isComplete: todo.is_complete,
+      }))
+    );
+    console.log(res.data);
+  };
+
+  useEffect(() => {
+    fetchTodos();
+  }, []);
 
   const addTodo = (todo) => {
     //if no one types a letter it doesnt showup
