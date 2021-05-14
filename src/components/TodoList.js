@@ -31,6 +31,15 @@ function TodoList() {
     // setTodos(todos);
   };
 
+  const removeTodo = async (id) => {
+    console.log(id);
+    let res2 = await axios.delete("http://localhost:8080/api/todo/" + id);
+
+    // console.log(res.status);
+    fetchTodos();
+    // setTodos(todos);
+  };
+
   const fetchTodos = async () => {
     const res = await axios.get("http://localhost:8080/api/todo");
     setTodos(
@@ -66,17 +75,17 @@ function TodoList() {
   //   // console.log(...todos);
   // };
 
-  const removeTodo = (id) => {
-    // const removeArr = [...todos].filter((todo) => todo.id !== id);
-    const newArr = [];
-    for (let i = 0; i < todos.length; i++) {
-      if (todos[i].id != id) {
-        newArr.push(todos[i]);
-      }
-    }
+  // const removeTodo = (id) => {
+  //   // const removeArr = [...todos].filter((todo) => todo.id !== id);
+  //   const newArr = [];
+  //   for (let i = 0; i < todos.length; i++) {
+  //     if (todos[i].id != id) {
+  //       newArr.push(todos[i]);
+  //     }
+  //   }
 
-    setTodos(newArr);
-  };
+  //   setTodos(newArr);
+  // };
 
   const updateTodo = (todoId, newValue) => {
     if (!newValue.text || /^\s*$/.test(newValue.text)) {
