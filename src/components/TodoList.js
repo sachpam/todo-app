@@ -20,6 +20,17 @@ function TodoList() {
   const [todos, setTodos] = useState([]);
   const [count, setCount] = useState(0);
 
+  const addTodo = async (todo) => {
+    console.log(todo);
+    let res1 = await axios.post("http://localhost:8080/api/todo", {
+      id: todo.id,
+      todo: todo.text,
+      is_complete: todo.isComplete,
+    });
+    fetchTodos();
+    // setTodos(todos);
+  };
+
   const fetchTodos = async () => {
     const res = await axios.get("http://localhost:8080/api/todo");
     setTodos(
@@ -36,24 +47,24 @@ function TodoList() {
     fetchTodos();
   }, []);
 
-  const addTodo = (todo) => {
-    //if no one types a letter it doesnt showup
-    if (!todo.text || /^\s*$/.test(todo.text)) {
-      return;
-    }
+  // const addTodo = (todo) => {
+  //   //if no one types a letter it doesnt showup
+  //   if (!todo.text || /^\s*$/.test(todo.text)) {
+  //     return;
+  //   }
 
-    // const newTodos = [todo, ...todos];
-    // const newArr = [...todos];
-    const newArr = [];
-    for (let i = 0; i < todos.length; i++) {
-      newArr.push(todos[i]);
-    }
-    newArr.push(todo);
+  //   // const newTodos = [todo, ...todos];
+  //   // const newArr = [...todos];
+  //   const newArr = [];
+  //   for (let i = 0; i < todos.length; i++) {
+  //     newArr.push(todos[i]);
+  //   }
+  //   newArr.push(todo);
 
-    setTodos(newArr);
-    // setCount((prev) => prev + 1);
-    // console.log(...todos);
-  };
+  //   setTodos(newArr);
+  //   // setCount((prev) => prev + 1);
+  //   // console.log(...todos);
+  // };
 
   const removeTodo = (id) => {
     // const removeArr = [...todos].filter((todo) => todo.id !== id);
@@ -111,5 +122,4 @@ function TodoList() {
     </div>
   );
 }
-
 export default TodoList;
