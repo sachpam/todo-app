@@ -22,7 +22,7 @@ function TodoList() {
 
   const addTodo = async (todo) => {
     console.log(todo);
-    let res1 = await axios.post("http://localhost:8080/api/todo", {
+    let res1 = await axios.post("http://localhost:8080/api/todos", {
       id: todo.id,
       todo: todo.text,
       is_complete: todo.isComplete,
@@ -33,7 +33,7 @@ function TodoList() {
 
   const removeTodo = async (id) => {
     console.log(id);
-    let res2 = await axios.delete("http://localhost:8080/api/todo/" + id);
+    let res2 = await axios.delete("http://localhost:8080/api/todos/" + id);
 
     // console.log(res.status);
     fetchTodos();
@@ -41,7 +41,7 @@ function TodoList() {
   };
 
   const fetchTodos = async () => {
-    const res = await axios.get("http://localhost:8080/api/todo");
+    const res = await axios.get("http://localhost:8080/api/todos");
     setTodos(
       res.data.map((todo) => ({
         id: todo.id,
@@ -87,40 +87,52 @@ function TodoList() {
   //   setTodos(newArr);
   // };
 
-  const updateTodo = (todoId, newValue) => {
+  const updateTodo = async (todoId, newValue) => {
     if (!newValue.text || /^\s*$/.test(newValue.text)) {
       return;
     }
 
-    const newArr = [];
-    for (let i = 0; i < todos.length; i++) {
-      if (todos[i].id == todoId) {
-        newArr.push(newValue);
-      } else {
-        newArr.push(todos[i]);
-      }
-    }
-    setTodos(newArr);
+    // const newArr = [];
+    // for (let i = 0; i < todos.length; i++) {
+    //   if (todos[i].id == todoId) {
+    //     newArr.push(newValue);
+    //   } else {
+    //     newArr.push(todos[i]);
+    //   }
+    // }
+
+    await axios.put(`http://localhost:8080/api/todos/${todoId}`, {
+      todo: newValue.text,
+    });
+
+    fetchTodos();
+
+    // setTodos(newArr);
 
     // setTodos((prev) =>
     //   prev.map((item) => (item.id === todoId ? newValue : item))
     // );
   };
 
-  const completeTodo = (id) => {
-    let updatedTodos = todos.map((todo) => {
-      if (todo.id === id) {
-        todo.isComplete = !todo.isComplete;
-      }
-      return todo;
+  const completeTodo = async (id) => {
+    const todo = todos.find((todo) => todo.id === id);
+    await axios.put(`http://localhost:8080/api/todos/${id}`, {
+      is_complete: !todo.isComplete,
     });
-    setTodos(updatedTodos);
+
+    fetchTodos();
+    // let updatedTodos = todos.map((todo) => {
+    //   if (todo.id === id) {
+    //     todo.isComplete = !todo.isComplete;
+    //   }
+    //   return todo;
+    // });
+    // setTodos(updatedTodos);
   };
 
   return (
     <div>
       <h1>Whats the plan for today?</h1>
-      <h3>{count}</h3>
       <TodoForm onSubmit={addTodo} />
       <Todo
         todos={todos}
